@@ -1,0 +1,8 @@
+scenario,weights,jaccard_overlap_with_default_top20,n_balochistan_in_top20,top5_districts
+default (40/30/20/10),"{'mortality_risk': 0.4, 'uncertainty': 0.3, 'geographic_accessibility_proxy': 0.2, 'population': 0.1}",1.0,14,"ZHOB, LORALAI, BHAKKAR, PANJGUR, ZIARAT"
+mortality_only,"{'mortality_risk': 1.0, 'uncertainty': 0.0, 'geographic_accessibility_proxy': 0.0, 'population': 0.0}",0.25,2,"ZHOB, LORALAI, BHAKKAR, SAHIWAL, BADIN"
+access_only,"{'mortality_risk': 0.0, 'uncertainty': 0.0, 'geographic_accessibility_proxy': 1.0, 'population': 0.0}",0.379,17,"AWARAN, CHAGAI, WASHUK, KHARAN, PANJGUR"
+uncertainty_only,"{'mortality_risk': 0.0, 'uncertainty': 1.0, 'geographic_accessibility_proxy': 0.0, 'population': 0.0}",0.6,16,"ZHOB, LORALAI, ZIARAT, PANJGUR, HARNAI"
+equal_weight (25/25/25/25),"{'mortality_risk': 0.25, 'uncertainty': 0.25, 'geographic_accessibility_proxy': 0.25, 'population': 0.25}",0.818,13,"ZHOB, LORALAI, PANJGUR, CHAGAI, BHAKKAR"
+no_access_component (50/50/0/0),"{'mortality_risk': 0.5, 'uncertainty': 0.5, 'geographic_accessibility_proxy': 0.0, 'population': 0.0}",0.538,10,"ZHOB, LORALAI, BHAKKAR, ZIARAT, PANJGUR"
+population_weighted (20/20/20/40),"{'mortality_risk': 0.2, 'uncertainty': 0.2, 'geographic_accessibility_proxy': 0.2, 'population': 0.4}",0.538,9,"ZHOB, LAHORE, LORALAI, FAISALABAD, RAHIM YAR KHAN"

@@ -1,0 +1,21 @@
+name: pk-mortality-surveillance
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pandas>=2.0
+  - numpy>=1.24
+  - geopandas>=0.14
+  - shapely>=2.0
+  - pyproj>=3.6
+  - scikit-learn>=1.3
+  - scipy>=1.11
+  - statsmodels>=0.14
+  - matplotlib>=3.7
+  - seaborn>=0.12
+  - jupyter
+  - openpyxl
+  - pip
+  - pip:
+      - pymc>=5.10        # Bayesian hierarchical SAE (Layer 3 stretch)
+      - arviz>=0.17        # Bayesian diagnostics

@@ -1,0 +1,41 @@
+# --- DHS microdata: NEVER commit, NEVER redistribute (terms of use) ---
+data/raw/dhs/
+*.dta
+*.sav
+*.DTA
+*.SAV
+
+# --- DHS-derived intermediate/granular files: kept local, not published.
+# These are more granular than final district-level results (cluster-
+# level lookups, person-record-level survival data) -- final district
+# aggregates in data/processed/mortality/, features/, models/, decision/
+# ARE published; this directory specifically is not. See
+# docs/DATA_SOURCES.md for the reasoning. ---
+data/processed/dhs_derived/
+
+# --- Large model trace: regeneratable via scripts/models/04_hierarchical_hazard_sae.py,
+# not needed in version control. ---
+models/hierarchical_hazard_sae_trace.pkl
+
+# --- Large raw source dumps (re-fetchable via docs/DATA_SOURCES.md) ---
+data/raw/pbs2017-main/
+*.tar.gz
+
+# --- Standard Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# --- OS / editor ---
+.DS_Store
+.vscode/
+
+# --- Test artifacts ---
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Jupyter checkpoint clutter already covered above ---

@@ -1,0 +1,5 @@
+component_removed,original_weight,jaccard_overlap_with_full_model,influence
+uncertainty,0.3,0.379,0.621
+mortality_risk,0.4,0.538,0.462
+geographic_accessibility_proxy,0.2,0.538,0.462
+population,0.1,0.905,0.095
