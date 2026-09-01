@@ -363,6 +363,21 @@ Their absence means:
 - No real facility-density or travel-time covariate exists yet
   (`remoteness_proxy` stands in, see Limitation 5).
 
+**Attempted 2026-09-01 (WHO GHO):** checked whether WHO's Global
+Health Observatory API (`ghoapi.azureedge.net`) or `www.who.int` were
+reachable from the working environment to pull Pakistan-relevant
+indicators (e.g. cause-specific mortality fractions, vaccination
+coverage) at national or provincial level. Both blocked
+(`host_not_allowed`), same failure mode as the HDX facility-data
+attempt above — the sandbox's network allowlist covers package
+registries and GitHub only, not general data-hosting domains. No
+WHO figures were reconstructed from memory or approximated as a
+substitute. GHO data is normally accessible without authentication
+via `https://ghoapi.azureedge.net/api/<IndicatorCode>` (OData,
+JSON), so from an environment with open web access this is a
+low-friction fetch — it just isn't one from here. Next session with
+web access should be able to complete this directly.
+
 ## 11. Kohistan District: a single-district double data gap
 
 Kohistan District is the one case in this entire pipeline where BOTH
