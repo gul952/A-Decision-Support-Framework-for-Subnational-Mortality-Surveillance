@@ -329,32 +329,35 @@ survey period (an earlier version of this validation used only a
 2019 estimate, a 1-2 year offset from the survey; the current version
 supersedes that).
 
-**This validation surfaced a real, substantive finding, not just a
-confirmation:** using the time-matched comparison, the national level
-agrees reasonably closely (this project: 60.6/1,000; GBD: 62.1/1,000),
-as does Punjab (66.8 vs. 69.6) and KP (52.0 vs. 49.7). But **Balochistan
-substantially disagrees**: this project's DHS-survey-based hierarchical
-model ranks Balochistan as Pakistan's highest-U5MR province
-(79.1/1,000), while GBD ranks it as one of the lowest (50.7/1,000 in
-the 2017-18 average) — a 56% relative difference. This divergence is
-stable across both GBD reference periods available (48.4/1,000 in 2019,
-50.7/1,000 in 2017-18 avg), which argues against it being a fluke of a
-single GBD year. Spearman rank correlation between the two province
-orderings is only 0.50 (weak-to-moderate agreement). See
-`docs/GBD_VALIDATION_FINDINGS.md` for the full comparison table and
-candidate explanations (small DHS sample sizes in Balochistan
-districts, GBD's heavier cross-source smoothing, or a genuine
-reflection of how unstable subnational mortality estimates are in a
-data-sparse province — this project does not claim to resolve which
-explanation dominates).
+**[Superseded — corrected below] This subsection originally reported
+the pre-censoring-fix finding as current.** It is retained in edited
+form only so the historical record (what Section 1 above refers to)
+stays intact; do not cite the 0.50/56% figures below as this
+project's present result — see the corrected figures immediately
+after.
 
-**Implication for any paper or report using this framework:** claims
-about Balochistan's mortality ranking should be presented as this
-project's DHS-survey-based finding, explicitly flagged as disagreeing
-with GBD's independent estimate — not as an uncontested fact. The
-scale of this disagreement is itself useful evidence for the project's
-central argument about the fragility of subnational mortality evidence
-in Pakistan.
+Under the earlier, flawed binomial model, the time-matched comparison
+showed Balochistan substantially disagreeing with GBD: this project's
+estimate at that time (79.1/1,000) vs. GBD's (50.7/1,000 in the
+2017-18 average) — a 56% relative difference, with province-order
+Spearman correlation of only 0.50. This is the same divergence
+documented in Section 1's historical-bug entry above.
+
+**Corrected model (current, post-fix):** with the discrete-time
+hazard model's proper right-censoring, this project and GBD now agree
+reasonably well on province ordering — Spearman rank correlation
+0.90 (see `docs/GBD_VALIDATION_FINDINGS.md` for the full comparison
+table). The largest remaining province-level gap is Sindh (this
+project: 48.2 vs. GBD: 61.7/1,000, -22%), a smaller and
+more ordinary-magnitude disagreement attributable to genuine
+methodological differences between a single-survey hazard model and
+GBD's multi-source synthesis rather than a further structural issue.
+
+**Implication for any paper or report using this framework:** cite
+the corrected 0.90 correlation and the Sindh gap as the current
+external-benchmarking result. The historical 0.50/56% Balochistan
+figures belong only in a before/after discussion of the censoring
+fix (Section 1), never presented as the project's present finding.
 
 **Still not integrated:** WHO Global Health Observatory indicators,
 real health facility location/travel-time data (see Limitation 5).
