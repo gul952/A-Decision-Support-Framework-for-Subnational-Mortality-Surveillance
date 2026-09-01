@@ -185,6 +185,23 @@ health facility location data + a proper travel-time/routing estimate
 (e.g. via OpenStreetMap routing or a WorldPop friction-surface layer),
 as originally scoped as a Layer 1 stretch goal.
 
+**Attempted 2026-09-01:** identified the HDX/HOTOSM "Pakistan Health
+Facilities (OpenStreetMap Export)" points dataset
+(https://data.humdata.org/dataset/hotosm_pak_health_facilities) as a
+real, openly-licensed, geocoded candidate to replace this proxy —
+district centroids are already available in
+`data/processed/geography/districts.geojson`, so the remaining work
+is a nearest-facility-distance join. Blocked at the download step:
+`data.humdata.org` was not reachable from the working environment at
+the time. No facility data was fabricated or estimated as a
+substitute — `remoteness_proxy` is left as-is. To complete this: (1)
+download the HDX points export (small, no auth required) to
+`data/raw/health_facilities/`, (2) compute nearest-facility haversine
+or routed distance from each district centroid, (3) add as a new
+`facility_distance_km` feature alongside (not replacing, initially)
+`remoteness_proxy` so the sensitivity analysis can compare them
+directly before any swap.
+
 ## 6. Composite index weights are literature-informed assumptions, not fitted parameters
 
 Every weighting scheme in this project — the deprivation index's
