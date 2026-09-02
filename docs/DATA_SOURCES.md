@@ -88,16 +88,22 @@ pipeline automatically).
   small, aggregate, and non-identifying — no special compliance
   handling needed beyond standard citation).
 - Used by: `scripts/models/06_validate_against_gbd.py`
-- **Key finding:** using the properly time-matched 2017-2018 average,
-  the national-level comparison is close (this project's SAE:
-  60.6/1,000 vs. GBD: 62.1/1,000). Province-level agreement is mixed —
-  Punjab and KP are close; Sindh diverges moderately (-16%); and
-  Balochistan diverges substantially (this project: 79.1/1,000 vs.
-  GBD: 50.7/1,000, a 56% difference), and this divergence is stable
-  across both GBD reference periods (2017-18 avg and 2019), which
-  argues against it being a fluke of a single GBD year. See
-  `docs/GBD_VALIDATION_FINDINGS.md` and `docs/LIMITATIONS.md` for full
-  discussion — this divergence is reported as a genuine finding, not
-  resolved or hidden.
+- **Key finding (current, post-censoring-fix):** using the properly
+  time-matched 2017-2018 average and the corrected discrete-time
+  hazard model (`04_hierarchical_hazard_sae.py`), province-level
+  agreement with GBD is strong — Spearman rank correlation 0.90.
+  Punjab and KP are close; the largest remaining gap is Sindh
+  (this project: 48.2 vs. GBD: 61.7/1,000, -22%), an ordinary-
+  magnitude difference attributable to genuine methodological
+  differences rather than a structural issue. See
+  `docs/GBD_VALIDATION_FINDINGS.md` for the full comparison table.
+  **Historical note:** an earlier, since-corrected version of the
+  hierarchical model (`03_DEPRECATED_hierarchical_bayesian_sae_binomial.py`,
+  which incorrectly assumed every birth had a full uncensored 5-year
+  follow-up) showed a substantial 56% Balochistan divergence from GBD
+  (79.1 vs. 50.7/1,000) and only 0.50 rank correlation — this was a
+  real bug, now fixed; see `docs/LIMITATIONS.md` §1 for the full
+  before/after account. Do not cite the 79.1/50.7/56%/0.50 figures as
+  the project's current result.
 
 *This file is updated as the pipeline grows — check back after each new layer.*

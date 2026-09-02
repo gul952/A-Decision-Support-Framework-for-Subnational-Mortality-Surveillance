@@ -32,7 +32,7 @@ Raw Data → Cleaning Pipeline → Statistical Model → Decision Engine → Int
 |---|---|---|
 | 1. Data Engineering | Ingest and reconcile PBS census + DHS survey data into one clean, joinable district-level panel | `data/processed/geography/`, `data/processed/demographics/` |
 | 2. Feature Engineering | Build interpretable composite indices (deprivation, WASH, crowding, remoteness) | `data/processed/features/` |
-| 3. Small Area Estimation | Real DHS-derived district U5MR + Bayesian hierarchical model with province-level pooling | `data/processed/models/hierarchical_sae_results.csv` |
+| 3. Small Area Estimation | Real DHS-derived district U5MR + Bayesian hierarchical discrete-time hazard model with province-level pooling | `data/processed/models/hierarchical_hazard_sae_results.csv` |
 | 4. Decision Engine | Transparent, adjustable-weight prioritization scoring | `data/processed/decision/district_priority_scores.csv` |
 | 5. Interactive Platform | Standalone dashboard: map, live weight sliders, per-district explainability | `dashboard/index.html` |
 
