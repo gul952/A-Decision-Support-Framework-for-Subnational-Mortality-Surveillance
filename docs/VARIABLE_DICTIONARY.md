@@ -162,36 +162,75 @@ difference, confirming the reimplementation is methodologically sound.
 
 ---
 
-## `data/processed/models/hierarchical_sae_results.csv`
+## `data/processed/models/hierarchical_hazard_sae_results.csv`
 *Produced by `scripts/models/04_hierarchical_hazard_sae.py`*
+
+**[Corrected 2026-09-01 — this section previously described the
+deprecated binomial model's structure and the wrong output filename.
+The active model is the discrete-time hazard model below; the earlier
+`03_DEPRECATED_hierarchical_bayesian_sae_binomial.py` is retained only
+as a documented before/after record, is not called by
+`scripts/run_pipeline.sh`, and should not be cited as the project's
+current method — see `docs/LIMITATIONS.md` §1 and
+`docs/GBD_VALIDATION_FINDINGS.md`.]**
 
 | Variable | Description | Model component |
 |---|---|---|
 | `had_direct_data` | Whether this district had ≥1 sampled DHS birth | — |
 | `n_births_direct` | Same as `n_births_5yr` above | — |
-| `u5mr_posterior_mean` | Posterior mean U5MR estimate, per 1,000 | Bayesian hierarchical model — see below |
-| `u5mr_ci_lower95` / `u5mr_ci_upper95` | 95% posterior credible interval | 2.5th/97.5th percentile of the posterior `p` samples |
+| `u5mr_posterior_mean` | Posterior mean U5MR estimate, per 1,000 | Bayesian hierarchical discrete-time hazard model — see below |
+| `u5mr_ci_lower95` / `u5mr_ci_upper95` | 95% posterior credible interval | 2.5th/97.5th percentile of the posterior segment-probability samples, chained via the actuarial formula below |
 | `ci_width` | `u5mr_ci_upper95 − u5mr_ci_lower95` | Used directly as the "uncertainty" component in the priority score |
 | `run_mode` | `"normal"` or `"no_dhs_prior_only"` | Traceability flag: `"no_dhs_prior_only"` means the entire model ran with zero DHS data anywhere (all 135 districts `had_direct_data=False`) -- a degenerate fallback mode that exists only so `scripts/run_pipeline.sh --no-dhs` doesn't crash for a reader without DHS access. Results under this mode reflect only the model's prior, not survey evidence, and are explicitly NOT a usable mortality estimate -- see `docs/LIMITATIONS.md`. Guarded by a refuse-to-overwrite safeguard requiring `--force-no-dhs` if a real (`"normal"`) result already exists, to prevent accidentally clobbering a genuine analysis. |
+| `model_version` | Always `"hazard_v1_censoring_corrected"` | Literal tag distinguishing this output from any legacy binomial-model artifact |
 
-**Model structure** (binomial-normal hierarchical model, logit link):
+**Model structure** (discrete-time hazard / Poisson person-time model,
+fit on person-segment survival records, logit link on the per-segment
+hazard):
 ```
-deaths_d ~ Binomial(n_births_d, p_d)
-logit(p_d) = mu_province[province_d] + beta · X_d + eps_d
-mu_province[p] ~ Normal(mu_national, sigma_province)
-mu_national ~ Normal(logit(0.075), 1)
-beta ~ Normal(0, 1)     [covariates: deprivation_index, urban_pct, remoteness_proxy, all standardized]
-sigma_province, sigma_district ~ HalfNormal
+For each (district d, age segment s) cell:
+    weighted_events_ds ~ Poisson(p_ds * weighted_exposure_ds)
+    logit(p_ds) = alpha_segment[s] + mu_province[province_d]
+                  + beta . X_d + eps_district_d
+
+    p_ds = probability of death WITHIN segment s, for a child who
+           entered the segment alive (a discrete-time hazard on the
+           segment scale, not an instantaneous per-month rate)
+
+    alpha_segment[s] ~ Normal(0, 2)      [8 standard DHS age segments:
+                                           0, 1-2, 3-5, 6-11, 12-23,
+                                           24-35, 36-47, 48-59 months]
+    mu_province[p] ~ Normal(mu_national, sigma_province)
+    mu_national ~ Normal(0, 1)
+    beta ~ Normal(0, 1)     [covariates: deprivation_index, urban_pct,
+                              remoteness_proxy, all standardized]
+    sigma_province, sigma_district ~ HalfNormal(1)
 ```
 Fit via PyMC (NUTS sampler, 4 chains × 1500 draws, target_accept=0.95).
 Convergence: R-hat = 1.000 across all parameters, no divergences (see
 console output logged during the pipeline run).
 
+District-level U5MR is reconstructed from the fitted segment death
+probabilities via the same actuarial chaining formula used in the
+direct estimator — `U5MR = 1 - PROD_segments(1 - p_s)` — computed from
+POSTERIOR SAMPLES of the segment probabilities, so the reported 95%
+credible interval correctly propagates all model uncertainty rather
+than reflecting only a single aggregate rate's uncertainty.
+
+This replaces an earlier model that fit
+`deaths_d ~ Binomial(n_births_d, p_d)` directly on already-aggregated
+district counts, which implicitly assumed every child had a full,
+uncensored 5-year follow-up window — incorrect, since children born
+recently before the interview had only been at risk for a few months.
+See `docs/LIMITATIONS.md` §1 for the concrete evidence (Balochistan
+GBD-divergence before/after) that this correction materially changed
+results, not just theoretical correctness.
+
 Districts with `had_direct_data = False` contribute no likelihood term
-(PyMC handles `Binomial(n=0, p)` as a zero log-likelihood contribution
+(PyMC handles zero-exposure cells as a zero log-likelihood contribution
 automatically) — their posterior is driven entirely by
-`mu_province` + `beta · X`, which is the small-area "borrowing
-strength" mechanism this model exists to provide.
+`mu_province` + `beta · X` + segment baseline hazard, which is the
+small-area "borrowing strength" mechanism this model exists to provide.
 
 ---
 
