@@ -432,6 +432,96 @@ JSON), so from an environment with open web access this is a
 low-friction fetch — it just isn't one from here. Next session with
 web access should be able to complete this directly.
 
+## 10a. DHS vaccination coverage as a second, independent external validation axis (completed 2026-09-03, mixed result)
+
+Per the reasoning in Section 10 above, this project's only external
+validation prior to this addition (IHME GBD) compares one mortality
+*estimate* against another — useful, but both estimate the same
+underlying quantity via related demographic methods. Vaccination
+coverage is a genuinely different kind of evidence: a directly-
+measured health-system output (mother-reported / vaccination-card
+data), causally upstream of child mortality, collected in the SAME
+PDHS 2017-18 survey round used throughout this project (registered
+via the same DHS project, no new compliance boundary).
+
+**Data and method**
+(`scripts/cleaning/05_clean_dhs_kr_vaccination.py`): DHS Children's
+Recode (KR) file, PKKR71FL, restricted to the standard international
+reference cohort (children 12-23 months old, alive at interview —
+2,314 of 12,708 total birth records), matched to district via the
+same cluster-geography lookup used throughout this pipeline
+(1,902/2,314 cohort children fell within the 135-district scope,
+same AJK/Gilgit-Baltistan exclusion as elsewhere). "Fully vaccinated"
+= received BCG + Pentavalent(1-3) + Polio(1-3) + Measles(1), per the
+DHS Program's own standard definition for this survey round (Pakistan
+2017-18 used Pentavalent, not standalone DPT).
+
+**Reimplementation validated against published external benchmarks**
+(same "aggregate consistency check" logic as Section 2's direct U5MR
+reimplementation): this project's national aggregate — 65.6% fully
+vaccinated among children 12-23 months — matches the PDHS 2017-18's
+own published national figure (65.6%) essentially exactly. The
+provincial breakdown mostly replicates too: Punjab 79.9% (published:
+80.3%) is a close match. Balochistan diverges more: this
+reimplementation found 28.8% vs. a published ~40% figure cited in a
+follow-up survey paper referencing the same PDHS round — a real,
+unresolved discrepancy (not caused by any single broken antigen
+variable; all eight individual antigen rates for Balochistan look
+internally coherent with an expected dose-dropout pattern), most
+likely attributable to small sample size in that province cell
+(n=229) combined with a possible difference in the exact published
+figure's source/definition, which this project was not able to
+independently verify. Reported as found, not adjusted to match.
+
+**Core result — does vaccination coverage corroborate the mortality
+model's district rankings? Largely no, at the district level:**
+- District-level correlation between `u5mr_posterior_mean` and
+  `pct_fully_vaccinated`: r = -0.03 (n=119 districts with both
+  estimates), not statistically distinguishable from zero.
+  Restricting to the subset with less-thin vaccination samples
+  (n_children_12_23mo ≥ 10, 77 districts) still only reaches r = 0.18,
+  not significant (p = 0.12).
+- **Most likely explanation: the vaccination-coverage sample is too
+  thin at district level to be reliable, not that the mortality
+  model is wrong.** The median district has only 13 sampled children
+  in the 12-23-month cohort (`n_children_12_23mo`); 100/119 districts
+  are flagged `low_vaccination_sample` (below a 25-record stability
+  threshold). An 8-antigen composite indicator estimated from ~13
+  children per district is expected to be extremely noisy — this is
+  a sample-size limitation of the KR file at this level of
+  disaggregation, not a finding about the SAE model's validity.
+- **Aggregating to province level** (6 provinces, population-weighted
+  by district sample size) shows a positive-direction but small and
+  statistically unpowered relationship (r = 0.37, n=6, not
+  significant) — with a genuinely counterintuitive pattern worth
+  reporting rather than hiding: Punjab shows both the *highest*
+  modeled mortality (68.5/1,000) and the *highest* vaccination
+  coverage (79.7%) of any province, while former FATA districts show
+  low modeled mortality (19.3/1,000) alongside moderate coverage
+  (23.1%). This is consistent with vaccination coverage and
+  under-5 mortality being driven by only partially overlapping causal
+  pathways (e.g. neonatal causes, birth complications, and
+  nutritional status are not captured by immunization coverage at
+  all) — not necessarily a contradiction of either estimate, but a
+  reminder that "high mortality" and "low vaccination" are not the
+  same construct and should not be assumed to track each other
+  district-by-district.
+
+**Honest framing for the paper:** this should be presented as a real
+attempted validation with an inconclusive/null district-level result,
+not reframed as either a confirmation or a refutation of the
+mortality model. The most defensible interpretation is that this
+particular comparison is underpowered by DHS sample size at the
+district level to serve as a meaningful corroboration or contradiction
+either way — a genuine limitation of using a single ~15,000-household
+survey to validate 135 districts' worth of estimates, and worth
+stating plainly as a boundary of what this kind of cross-validation
+can achieve, rather than a failure of the modeling approach itself.
+
+Output: `data/processed/dhs_derived/district_vaccination_coverage.csv`
+(district_key, n_children_12_23mo, pct_fully_vaccinated, pct_zero_dose,
+pct_bcg, pct_measles1, pct_penta3, low_vaccination_sample).
+
 ## 11. Kohistan District: a single-district double data gap
 
 Kohistan District is the one case in this entire pipeline where BOTH

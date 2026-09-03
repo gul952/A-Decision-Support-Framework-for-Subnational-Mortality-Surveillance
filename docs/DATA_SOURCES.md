@@ -24,6 +24,19 @@ anything marked `[NEEDED FROM YOU]` requires your DHS-authenticated login.
 
 **Terms of use:** https://dhsprogram.com/Data/terms-of-use.cfm — full terms including non-redistribution, confidentiality, and no re-identification apply and are enforced structurally (see compliance notes below, unchanged from original request).
 
+**Additional file received 2026-09-03:** Children's Recode (KR),
+PKKR71FL, 2017-18 PDHS — used for district-level vaccination coverage
+as a second, independent external validation axis (distinct from the
+births-based U5MR estimate). See `docs/LIMITATIONS.md` §10a for method
+and findings.
+
+**Additional file received 2026-09-03:** GPS/Geographic Data (GE),
+PKGE71FL, 2017-18 PDHS — 561 cluster lat/long points, used to
+regenerate `data/processed/dhs_derived/cluster_district_lookup.csv`
+(needed to join the KR file's cluster IDs to districts). Same file
+already referenced above in the original file table; this confirms
+it was actually obtained and used, not just planned.
+
 **Compliance notes (binding for this project):**
 - Raw microdata is stored only in `data/raw/dhs/` which is `.gitignore`d and never committed to any repository or redistributed in the dashboard.
 - Only district-aggregated, non-identifying derived indicators (e.g. "District X estimated U5MR = 0.045, 95% CI [...]") are permitted downstream in `data/processed/`, the Python package, or the dashboard.

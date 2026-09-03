@@ -380,6 +380,29 @@ def main():
         df["facility_count_in_district"] = np.nan
         df["low_osm_facility_coverage"] = np.nan
 
+    vaccination_path = DHS_SOCIOECONOMIC_PATH.parent / "district_vaccination_coverage.csv"
+    print(f"\nAttaching DHS vaccination coverage (external validation axis) "
+          f"from {vaccination_path}...")
+    if vaccination_path.exists():
+        vacc = pd.read_csv(vaccination_path)
+        df = df.merge(vacc, on="district_key", how="left")
+        n_with_vacc = df["pct_fully_vaccinated"].notna().sum()
+        print(
+            f"  Attached pct_fully_vaccinated and related columns "
+            f"({n_with_vacc}/{len(df)} districts have vaccination data -- "
+            f"see docs/LIMITATIONS.md Sec 10a for the mixed/null district-level "
+            f"validation result)"
+        )
+    else:
+        print(
+            "  NOTE: district_vaccination_coverage.csv not found -- run "
+            "scripts/cleaning/05_clean_dhs_kr_vaccination.py first (requires the "
+            "DHS KR file) if you want this covariate. Proceeding without it."
+        )
+        for col in ["n_children_12_23mo", "pct_fully_vaccinated", "pct_zero_dose",
+                    "pct_bcg", "pct_measles1", "pct_penta3", "low_vaccination_sample"]:
+            df[col] = np.nan
+
     print("Building under-5 population share...")
     df = build_under5_share(df)
 

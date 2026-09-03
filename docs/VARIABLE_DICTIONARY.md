@@ -99,6 +99,39 @@ lowest.
 
 ---
 
+## `data/processed/dhs_derived/district_vaccination_coverage.csv` → merged into `district_features.csv`
+*Produced by `scripts/cleaning/05_clean_dhs_kr_vaccination.py`*
+
+DHS Children's Recode (KR) vaccination indicators, aggregated to
+district level, then merged into the published `district_features.csv`
+via `scripts/features/01_build_composite_indices.py` — same
+compliance pattern as `district_dhs_socioeconomic.csv` above (the
+standalone file stays in the gitignored `dhs_derived/` directory since
+it is a DHS-derived compliance-boundary intermediate, but its
+district-aggregated, non-identifying values ARE published downstream,
+per `docs/DATA_SOURCES.md`'s compliance notes). Added as a second,
+independent external validation axis for the mortality model — see
+`docs/LIMITATIONS.md` §10a for full method and findings (including an
+honest null/mixed district-level result, attributed to small
+district-level sample sizes).
+
+| Variable | Description | Source variable | Transformation |
+|---|---|---|---|
+| `n_children_12_23mo` | Sampled children aged 12-23 months, alive at interview | PDHS KR `b5`, `b19` | Standard international reference cohort for vaccination-coverage reporting |
+| `pct_fully_vaccinated` | % receiving BCG + Pentavalent(1-3) + Polio(1-3) + Measles(1) | PDHS KR `h2,h51,h52,h53,h4,h6,h8,h9` | DHS standard "received" codes {1,2,3} (card date / mother-reported / marked without date); weighted by `v005/1,000,000` |
+| `pct_zero_dose` | % receiving none of the 8 above | Same source variables | Weighted, as above |
+| `pct_bcg` / `pct_measles1` / `pct_penta3` | Individual-antigen coverage | `h2` / `h9` / `h53` respectively | Weighted, as above |
+| `low_vaccination_sample` | Boolean flag | Derived | True if `n_children_12_23mo < 25` — 100/119 districts with any data are flagged; the district-level composite is expected to be noisy at typical district sample sizes (median n=13) |
+
+**Validation:** national aggregate (65.6% fully vaccinated) matches
+the PDHS 2017-18's own published national figure (65.6%) exactly;
+Punjab's provincial rate (79.9%) closely matches its published figure
+(80.3%). Balochistan's provincial rate diverged more from a published
+comparison figure (28.8% vs. ~40%) — reported as an open,
+unresolved discrepancy, not adjusted to match.
+
+---
+
 ## `data/processed/features/district_features.csv` — updated deprivation index
 *Produced by `scripts/features/01_build_composite_indices.py`*
 
