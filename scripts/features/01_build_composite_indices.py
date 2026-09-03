@@ -358,6 +358,28 @@ def main():
     print("Building remoteness proxy (STOPGAP -- see docstring)...")
     df = build_remoteness_proxy(df)
 
+    facility_distance_path = OUT_DIR / "facility_distance.csv"
+    print(f"\nAttaching real facility-distance covariate from {facility_distance_path}...")
+    if facility_distance_path.exists():
+        facility_dist = pd.read_csv(facility_distance_path)
+        df = df.merge(facility_dist, on="district_key", how="left")
+        n_low_cov = df["low_osm_facility_coverage"].sum()
+        print(
+            f"  Attached facility_distance_km, facility_count_in_district, "
+            f"low_osm_facility_coverage ({int(n_low_cov)}/{len(df)} districts "
+            f"flagged low coverage -- see docs/LIMITATIONS.md)"
+        )
+    else:
+        print(
+            "  NOTE: facility_distance.csv not found -- run "
+            "scripts/features/02_build_facility_distance.py first if you want "
+            "this covariate. Proceeding without it (remoteness_proxy still used "
+            "downstream)."
+        )
+        df["facility_distance_km"] = np.nan
+        df["facility_count_in_district"] = np.nan
+        df["low_osm_facility_coverage"] = np.nan
+
     print("Building under-5 population share...")
     df = build_under5_share(df)
 

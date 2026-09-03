@@ -185,22 +185,73 @@ health facility location data + a proper travel-time/routing estimate
 (e.g. via OpenStreetMap routing or a WorldPop friction-surface layer),
 as originally scoped as a Layer 1 stretch goal.
 
-**Attempted 2026-09-01:** identified the HDX/HOTOSM "Pakistan Health
+**Completed 2026-09-01:** obtained the HDX/HOTOSM "Pakistan Health
 Facilities (OpenStreetMap Export)" points dataset
-(https://data.humdata.org/dataset/hotosm_pak_health_facilities) as a
-real, openly-licensed, geocoded candidate to replace this proxy —
-district centroids are already available in
-`data/processed/geography/districts.geojson`, so the remaining work
-is a nearest-facility-distance join. Blocked at the download step:
-`data.humdata.org` was not reachable from the working environment at
-the time. No facility data was fabricated or estimated as a
-substitute — `remoteness_proxy` is left as-is. To complete this: (1)
-download the HDX points export (small, no auth required) to
-`data/raw/health_facilities/`, (2) compute nearest-facility haversine
-or routed distance from each district centroid, (3) add as a new
-`facility_distance_km` feature alongside (not replacing, initially)
-`remoteness_proxy` so the sensitivity analysis can compare them
-directly before any swap.
+(https://data.humdata.org/dataset/hotosm_pak_health_facilities,
+4,376 points exported 2026-05-06 via the HOTOSM Raw Data API, ODbL
+license) and built `facility_distance_km`
+(`scripts/features/02_build_facility_distance.py`) as a new
+covariate alongside `remoteness_proxy` — not replacing it, per the
+plan below. Method: filtered to 3,116 facilities tagged as clinically
+relevant (hospital/clinic/doctors; excludes pharmacies, dentists,
+standalone labs), then computed the distance from each district's
+geometric centroid to the nearest retained facility nationally
+(EPSG:24313 equal-area projection).
+
+**Important caveat found during this work, not swept under:**
+OpenStreetMap facility-mapping density is itself geographically
+uneven and strongly urban-biased. Karachi's four districts alone
+account for ~1,100 of the 3,116 retained points, while **35 of 135
+districts (26%) contain zero mapped facilities** — overwhelmingly
+rural Balochistan (20 districts) and former FATA agencies (8
+districts). A district with zero mapped facilities very likely has
+real clinics that simply aren't on OpenStreetMap yet, not literally
+none — so a large `facility_distance_km` value in these districts
+should be read as "distance to the nearest MAPPED facility," which
+may overstate true remoteness. Every district carries an explicit
+`low_osm_facility_coverage` flag for exactly this reason, following
+the same pattern already used for thin-DHS-sample flags elsewhere in
+this pipeline; the flag must travel with the number in any figure,
+model, or paper text that uses it.
+
+**Empirical comparison against `remoteness_proxy`**
+(`scripts/decision/04_compare_facility_distance_vs_remoteness_proxy.py`),
+substituting `facility_distance_km` for `remoteness_proxy` in the
+priority score with identical weights otherwise:
+- The two independently-constructed measures correlate at r = 0.71
+  nationally (r = 0.61 among adequately-mapped districts, r = 0.74
+  among low-coverage ones) — meaningful convergent validity between a
+  population-density-based measure and an actual-facility-location-
+  based one, despite coming from completely different data sources.
+- Top-20 priority list overlap: 16/20 districts (Jaccard 0.667)
+  shared between the two versions.
+- Balochistan's presence in the top-20 is nearly identical either way
+  (14/20 under `remoteness_proxy`, 13/20 under `facility_distance_km`)
+  — the original Balochistan-dominance finding is **not an artifact
+  of the population-density proxy specifically**; a real,
+  independently-sourced accessibility measure substantially confirms
+  it.
+- **But 9 of the 20 top-priority districts under `facility_distance_km`
+  are `low_osm_facility_coverage` districts** — meaning close to half
+  of that list is driven by "OSM has no mapped facility here" rather
+  than a distance calculated from real nearby mapped points. This
+  should be reported as a genuine open question, not resolved
+  one way or the other: it is consistent with both "these districts
+  are truly the most underserved" and "these districts are simply the
+  least-mapped," and this framework cannot currently distinguish the
+  two possibilities. A ground-truth facility census (e.g. from
+  Pakistan's Ministry of Health or provincial health departments)
+  would be needed to adjudicate it, and is out of scope for a
+  reproducible open-data project.
+
+**Recommended next step:** treat `facility_distance_km` as a
+complementary, imperfect corroborating signal for `remoteness_proxy`
+rather than a strict improvement, given the coverage-bias caveat
+above. A genuine upgrade to the decision engine would need either (a)
+independent verification of the zero-facility districts against a
+non-OSM source, or (b) a travel-time/routing model (e.g. a WorldPop
+friction-surface layer) that doesn't depend on facility-mapping
+completeness at all.
 
 ## 6. Composite index weights are literature-informed assumptions, not fitted parameters
 

@@ -63,8 +63,20 @@ anything marked `[NEEDED FROM YOU]` requires your DHS-authenticated login.
 |---|---|---|
 | WHO Global Health Observatory | health indicators, vaccination coverage | not started |
 | IHME GBD | province-level cause-specific mortality burden (for calibration/priors) | **integrated** — see below |
-| Health facility locations (Pakistan) | facility density, travel-time proxy | not started |
+| Health facility locations (Pakistan) | facility density, travel-time proxy | **integrated 2026-09-01** — see below |
 | WorldPop / nighttime lights (VIIRS) | population density validation, economic activity proxy | stretch goal |
+
+### Health facility locations (OpenStreetMap via HOTOSM) — completed
+
+**Status:** `[FETCHED]` — 2026-05-06 (exported), integrated 2026-09-01.
+
+- Source: https://data.humdata.org/dataset/hotosm_pak_health_facilities
+- Export tool: HOTOSM Raw Data API (https://github.com/hotosm/raw-data-api), OpenStreetMap data
+- License: Open Database License (ODbL) 1.0; individual contents under the Database Contents License — see `data/raw/health_facilities/HDX_Readme.txt`
+- Local path: `data/raw/health_facilities/hotosm_pak_health_facilities_points_geojson.geojson`
+- 4,376 total points; 3,116 retained after filtering to clinically-relevant types (hospital/clinic/doctors, excluding pharmacy/dentist/lab)
+- Used by: `scripts/features/02_build_facility_distance.py`
+- **Key finding:** meaningful convergent validity with the existing `remoteness_proxy` (r = 0.71) and near-identical Balochistan representation in the top-20 priority list (14/20 vs. 13/20) — but coverage is itself geographically uneven (35/135 districts have zero mapped facilities, concentrated in Balochistan and former FATA). See `docs/LIMITATIONS.md` §5 for the full comparison and the important caveat about interpreting results in low-coverage districts.
 
 ### IHME GBD cross-validation — completed
 
