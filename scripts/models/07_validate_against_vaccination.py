@@ -54,11 +54,14 @@ def main():
           f"(n={len(adequate)}):")
     print(f"  Pearson r  = {r2:.3f} (p={p2:.4f})")
 
+    feat_pop = pd.read_csv(FEATURES_PATH)[["district_key", "population_2017"]]
+    merged = merged.merge(feat_pop, on="district_key", how="left")
+
     prov_agg = merged.groupby("province").apply(
         lambda g: pd.Series({
             "mean_u5mr": np.average(
                 g["u5mr_posterior_mean"],
-                weights=g["n_births_direct"].replace(0, 1),
+                weights=g["population_2017"],
             ),
             "mean_fully_vacc": np.average(
                 g["pct_fully_vaccinated"], weights=g["n_children_12_23mo"]
