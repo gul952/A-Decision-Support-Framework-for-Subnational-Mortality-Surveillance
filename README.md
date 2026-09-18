@@ -87,9 +87,16 @@ exactly what that means and doesn't mean.
 ```
 data/
   raw/            # Original source data (PBS census auto-fetched;
-                   # DHS microdata git-ignored, must be supplied by you)
+                   # DHS microdata git-ignored, must be supplied by you --
+                   # see data/raw/dhs/README.md and DATA_ACCESS.md)
   external/        # Third-party comparison data (e.g. IHME GBD, user-supplied)
-  processed/       # Cleaned, feature-engineered, model-ready outputs
+  processed/       # Cleaned, feature-engineered, model-ready outputs.
+                   # Most subdirectories here are public; processed/dhs_derived/
+                   # is the one exception -- local-only, more granular
+                   # intermediate DHS artifacts (see its own README.md).
+  public/          # Pointers clarifying which existing paths above are
+                   # the project's public outputs / demo-mode data --
+                   # see data/public/outputs/README.md and demo/README.md
 scripts/
   cleaning/        # Layer 1
   features/        # Layer 2
@@ -97,6 +104,7 @@ scripts/
   decision/        # Layer 4
   run_pipeline.sh  # One-command full rebuild
   build_dashboard_data.py   # Regenerate dashboard's embedded data
+  audit_public_release.py  # Compliance scanner -- run before publishing
 pkmortality/        # Shared config (paths, CRS, naming conventions)
 dashboard/          # Layer 5 -- standalone React dashboard
 models/              # Saved fitted models (regression .pkl, MCMC trace)
@@ -108,6 +116,10 @@ docs/
   GBD_VALIDATION_FINDINGS.md # External cross-validation against IHME GBD 2023
 paper/               # Research paper draft (in progress)
 figures/             # Generated figures for the paper
+DATA_ACCESS.md              # What data you need to supply yourself, and how to get it
+REPRODUCIBILITY.md          # Full step-by-step reproduction guide, with troubleshooting
+COMPLIANCE.md                # Source requirements vs. this project's own conservative policies
+THIRD_PARTY_DATA_LICENSES.md # Per-source licensing status (separate from the code's MIT license)
 ```
 
 ## Key methodological notes
@@ -160,11 +172,32 @@ figures/             # Generated figures for the paper
 
 Code in this repository: MIT (see `LICENSE`).
 
-Data: PBS 2017 Census data is redistributed here under the license of
-its source repository (`cerp-analytics/pbs2017`, MIT). DHS data is
-**not** redistributed — see the DHS terms of use at
-https://dhsprogram.com/Data/terms-of-use.cfm, which govern any use of
-that dataset by anyone reproducing this project.
+Data: third-party data is **not** covered by the MIT license and is
+handled on a per-source basis — see `THIRD_PARTY_DATA_LICENSES.md` for
+the full breakdown (DHS, IHME GBD, OSM/HOTOSM, OCHA boundaries, PBS
+census). DHS data specifically is **not** redistributed — see the DHS
+terms of use at https://dhsprogram.com/Data/terms-of-use.cfm, which
+govern any use of that dataset by anyone reproducing this project.
+`COMPLIANCE.md` distinguishes what each source's terms actually
+require from this project's own additional conservative choices (e.g.
+small-cell count suppression, described there).
+
+## Data access and reproducing this project
+
+- **`DATA_ACCESS.md`** — exactly what data is and isn't included, and
+  how to obtain what's missing (principally your own authorized DHS
+  files).
+- **`REPRODUCIBILITY.md`** — full step-by-step reproduction guide for
+  both public demo mode and full reproduction mode, with a
+  troubleshooting section.
+- **`COMPLIANCE.md`** — this project's data-handling policy, with
+  DHS/source requirements explicitly distinguished from conservative
+  choices made on top of them.
+- **`scripts/audit_public_release.py`** — run this before publishing
+  any change; it scans tracked files for DHS microdata patterns,
+  credential-like files, and small-cell disclosure risks. Also runs
+  automatically on every push via GitHub Actions
+  (`.github/workflows/audit_public_release.yml`).
 
 ## Citation / acknowledgment
 

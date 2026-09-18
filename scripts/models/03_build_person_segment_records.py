@@ -63,7 +63,10 @@ from pkmortality.config import DATA_RAW, DATA_PROCESSED
 
 BR_PATH = DATA_RAW / "dhs" / "2017-18_DHS_GPS" / "PKBR71DT" / "PKBR71FL.DTA"
 CLUSTER_LOOKUP_PATH = DATA_PROCESSED / "dhs_derived" / "cluster_district_lookup.csv"
-DHS_DIRECT_PATH = DATA_PROCESSED / "mortality" / "district_u5mr_direct_dhs.csv"
+# Full (local-only, gitignored) direct-estimate file with raw small-cell
+# counts -- NOT the public-safe data/processed/mortality/ copy, which has
+# n_births_5yr/n_deaths_u5_5yr/n_clusters suppressed. See docs/COMPLIANCE.md.
+DHS_DIRECT_PATH = DATA_PROCESSED / "dhs_derived" / "district_u5mr_direct_dhs_full.csv"
 OUT_DIR = DATA_PROCESSED / "dhs_derived"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 

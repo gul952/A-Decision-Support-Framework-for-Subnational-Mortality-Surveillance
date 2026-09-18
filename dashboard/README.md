@@ -69,3 +69,12 @@ statistics only** -- no individual, household, or DHS-cluster-level
 records. This is a hard requirement (see `docs/DATA_SOURCES.md`,
 DHS terms of use) enforced at the `build_dashboard_data.py` step, which
 only reads from `data/processed/` (never `data/raw/dhs/`).
+
+The dashboard footer also carries third-party attribution (OCHA
+district boundaries, OpenStreetMap/HOTOSM facility data, IHME GBD,
+PBS census) — see `THIRD_PARTY_DATA_LICENSES.md` for what each of
+those terms actually requires. If you edit the footer text, edit it in
+`dashboard.jsx` (the attribution paragraph right after "Footer
+disclaimer") — `build_dashboard_data.py` re-embeds that file's content
+into `index.html` on every run, so editing `index.html` directly will
+be overwritten the next time the dashboard data is regenerated.

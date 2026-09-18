@@ -388,6 +388,11 @@ export default function MortalitySurveillanceDashboard() {
       <div style={{ borderTop: '1px solid #2a323c', padding: '14px 28px', fontSize: 11, color: '#6b7482', lineHeight: 1.6 }}>
         Estimates are MODELED, not observed or official mortality statistics. Built from PBS 2017 Census (district demographics/geography) and PDHS 2017-18 birth-history data (used only in aggregated, district-level, non-identifying form per DHS terms of use). {features.filter(f => !f.had_data).length} of {features.length} districts have zero direct DHS survey clusters and rely entirely on province + covariate pooling — their estimates carry wider uncertainty (see "data uncertainty" color mode). Decision-support only.
       </div>
+
+      {/* Third-party data attribution -- required by source terms, see THIRD_PARTY_DATA_LICENSES.md */}
+      <div style={{ borderTop: '1px solid #2a323c', padding: '10px 28px 16px', fontSize: 10.5, color: '#5a6270', lineHeight: 1.6 }}>
+        District boundaries: OCHA Pakistan administrative boundaries via HDX (license/version not independently re-verified by this project — see docs/DATA_SOURCES.md). Health facility locations: © OpenStreetMap contributors, via HOTOSM (Open Database License 1.0) — not redistributed as raw points, used only as an aggregated distance covariate. Province-level mortality benchmark: Global Burden of Disease Collaborative Network, GBD 2023 Results, IHME, 2024. Demographic data: Pakistan Bureau of Statistics, 2017 Census. See THIRD_PARTY_DATA_LICENSES.md for full terms.
+      </div>
     </div>
   );
 }

@@ -1,9 +1,23 @@
 # --- DHS microdata: NEVER commit, NEVER redistribute (terms of use) ---
-data/raw/dhs/
+data/raw/dhs/*
+!data/raw/dhs/README.md
 *.dta
 *.sav
 *.DTA
 *.SAV
+# GPS/cluster-level DHS shapefiles and their sidecar files
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+# DHS flat-file exports occasionally distributed as .csv/.zip/.rar -- these
+# are DHS microdata if they came from dhsprogram.com, not this project's own
+# processed/public CSVs (which are explicitly listed and never match these
+# patterns because they don't live under data/raw/dhs/).
+data/raw/dhs/**/*.csv
+data/raw/dhs/**/*.zip
+data/raw/dhs/**/*.rar
 
 # --- DHS-derived intermediate/granular files: kept local, not published.
 # These are more granular than final district-level results (cluster-
@@ -11,7 +25,8 @@ data/raw/dhs/
 # aggregates in data/processed/mortality/, features/, models/, decision/
 # ARE published; this directory specifically is not. See
 # docs/DATA_SOURCES.md for the reasoning. ---
-data/processed/dhs_derived/
+data/processed/dhs_derived/*
+!data/processed/dhs_derived/README.md
 
 # --- Large model trace: regeneratable via scripts/models/04_hierarchical_hazard_sae.py,
 # not needed in version control. ---
@@ -39,3 +54,29 @@ venv/
 htmlcov/
 
 # --- Jupyter checkpoint clutter already covered above ---
+
+# --- Credentials / secrets / local config: NEVER commit ---
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+secrets.yml
+secrets.yaml
+config.local.*
+*.local.env
+.netrc
+.aws/
+.dhsprogram_credentials
+
+# --- Local paths / machine-specific settings ---
+.direnv/
+*.local.json
+
+# --- Large regeneratable model artifacts (see docs/DATA_SOURCES.md for
+# how to regenerate) ---
+*.trace.pkl
+*.nc

@@ -37,11 +37,29 @@ approach (Rutstein & Rojas 2006, "Guide to DHS Statistics"):
     hierarchical model (03_DEPRECATED_hierarchical_bayesian_sae_binomial.py) is designed to
     address by borrowing strength across districts within a province.
 
-Output:
+Output (two-tier, per the project's small-cell disclosure policy --
+see docs/COMPLIANCE.md "Small-cell policy"):
+    data/processed/dhs_derived/district_u5mr_direct_dhs_full.csv
+        FULL version, for internal pipeline use only (gitignored, never
+        committed/redistributed). Columns: district_key, n_births_5yr,
+        n_deaths_u5_5yr, n_clusters, u5mr_direct, u5mr_lower95,
+        u5mr_upper95, low_direct_coverage (bool), estimate_type.
+        Some districts have as few as 1 sampled cluster or 0 recorded
+        deaths in the 5yr window -- publishing these exact small counts
+        alongside a named district would let a reader infer that a
+        district's entire DHS sample came from a single cluster, which
+        we treat as a disclosure risk. Downstream scripts that need the
+        raw counts (03_build_person_segment_records.py,
+        07_model_validation.py) read THIS file, not the public one.
+
     data/processed/mortality/district_u5mr_direct_dhs.csv
-        columns: district_key, n_births_5yr, n_deaths_u5_5yr,
-                 u5mr_direct, u5mr_se, u5mr_lower95, u5mr_upper95,
-                 low_direct_coverage (bool), estimate_type="dhs_direct"
+        PUBLIC-SAFE version, committed to the repository. Columns:
+        district_key, u5mr_direct, u5mr_lower95, u5mr_upper95,
+        low_direct_coverage (bool), estimate_type. The raw
+        n_births_5yr/n_deaths_u5_5yr/n_clusters small-cell counts are
+        deliberately omitted -- this is a conservative REPOSITORY
+        POLICY choice, not a claim that DHS's own terms mandate this
+        specific suppression (they do not specify a numeric threshold).
 """
 import sys
 import warnings
@@ -58,6 +76,11 @@ warnings.filterwarnings("ignore")
 BR_PATH = DATA_RAW / "dhs" / "2017-18_DHS_GPS" / "PKBR71DT" / "PKBR71FL.DTA"
 CLUSTER_LOOKUP_PATH = DATA_PROCESSED / "dhs_derived" / "cluster_district_lookup.csv"
 OUT_DIR = DATA_PROCESSED / "mortality"
+FULL_OUT_DIR = DATA_PROCESSED / "dhs_derived"  # gitignored -- full small-cell counts stay local
+PUBLIC_SAFE_COLUMNS = [
+    "district_key", "u5mr_direct", "u5mr_lower95", "u5mr_upper95",
+    "low_direct_coverage", "estimate_type",
+]
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Standard DHS age segments for the synthetic cohort life table (in months),
@@ -280,9 +303,18 @@ def main():
     )
     print(f"{n_no_data} of those have literally 0 births (fell in a district with a cluster assigned but no birth records after filtering -- should be 0 if joins are correct)")
 
-    out_path = OUT_DIR / "district_u5mr_direct_dhs.csv"
-    out.to_csv(out_path, index=False)
-    print(f"\nWrote: {out_path}")
+    FULL_OUT_DIR.mkdir(parents=True, exist_ok=True)
+    full_path = FULL_OUT_DIR / "district_u5mr_direct_dhs_full.csv"
+    out.to_csv(full_path, index=False)
+    print(f"\nWrote (local-only, full small-cell counts): {full_path}")
+
+    public_path = OUT_DIR / "district_u5mr_direct_dhs.csv"
+    out[PUBLIC_SAFE_COLUMNS].to_csv(public_path, index=False)
+    print(f"Wrote (public-safe, no raw n_births/n_deaths/n_clusters): {public_path}")
+    print(
+        "  (Repository policy, not a DHS requirement, to suppress exact "
+        "small-cell counts -- see docs/COMPLIANCE.md.)"
+    )
 
     print("\nDistribution of direct U5MR estimates (districts with data):")
     print(out[out["n_births_5yr"] > 0]["u5mr_direct"].describe())

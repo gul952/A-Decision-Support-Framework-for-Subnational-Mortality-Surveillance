@@ -44,6 +44,7 @@ it was actually obtained and used, not just planned.
 - The cluster→district lookup (`data/processed/dhs_derived/cluster_district_lookup.csv`) contains cluster IDs (a survey design index, not a household/respondent identifier) mapped to districts — kept in `data/processed/` as a derived artifact, but not published verbatim in the dashboard/paper; only resulting aggregate counts/rates are surfaced there.
 - Displaced GPS coordinates are used only for cluster→district spatial assignment, never for facility-distance calculations at sub-5km precision.
 - Districts with thin direct DHS coverage are flagged (`low_direct_coverage`) rather than suppressed, consistent with DHS's own small-area publication norms, and are never disaggregated further.
+- **Small-cell counts are suppressed in the public copy of the direct estimate file.** `data/processed/mortality/district_u5mr_direct_dhs.csv` (committed, public) contains only the rate, CI, and coverage flag — the raw `n_births_5yr`/`n_deaths_u5_5yr`/`n_clusters` counts (some as low as 1 cluster or 0 deaths) live only in the gitignored `data/processed/dhs_derived/district_u5mr_direct_dhs_full.csv`. This is a conservative repository policy, not a specific numeric threshold mandated by DHS's own terms — see `docs/COMPLIANCE.md`.
 - A PDF of any resulting report/publications will be submitted to references@dhsprogram.com per the terms — **action item for you before any public paper/report release.**
 - Only your registered DHS project's approved research purpose covers this analysis; using this data for an unrelated project would require registering a new DHS project first, per DHS's own terms.
 
@@ -55,7 +56,15 @@ it was actually obtained and used, not just planned.
 
 - Repo: https://github.com/cerp-analytics/pbs2017
 - Original source: https://www.pbs.gov.pk/content/district-wise-results-tables-census-2017
-- License: MIT
+- **cerp-analytics/pbs2017 repository license: MIT.** This covers the
+  *digitization/formatting code and files as packaged in that repo*.
+  It is a separate, unresolved question whether the underlying PBS
+  census tables and OCHA-sourced boundary shapefile (bundled in the
+  same repo, see §3 below) are themselves freely redistributable under
+  Pakistani or international norms for official statistics — an
+  upstream repo's MIT license does not by itself establish that the
+  government data it contains is redistributable. **YELLOW: treated
+  conservatively; see `THIRD_PARTY_DATA_LICENSES.md`.**
 - Tables used: Table 01 (population/density/urban%), Table 12 (literacy, tehsil→district aggregated), Table 29 (household crowding), Table 35 (water source), Table 37 (sanitation/kitchen)
 - Local path: `data/raw/pbs2017-main/data/`
 
@@ -67,6 +76,17 @@ it was actually obtained and used, not just planned.
 - Original source: OCHA Pakistan admin boundaries, via https://data.humdata.org/dataset/pakistan-union-council-boundaries-along-with-other-admin-boundaries-dataset
 - 161 polygons, WGS84 (EPSG:4326)
 - Note: boundaries dated ~2010-vintage per repo README; some divergence from 2017 census district list expected (e.g. district splits) — reconciled in `scripts/cleaning/01_clean_geography.py`
+- **Licensing has not been independently re-verified against the
+  original OCHA/HDX dataset page.** HDX-hosted OCHA administrative
+  boundary datasets are commonly released under CC BY-IGO or similar
+  terms requiring attribution, but this project has not confirmed the
+  exact license actually attached to *this* dataset version, and does
+  **not** claim it is MIT-licensed merely because it arrived bundled
+  inside an MIT-licensed code repository. **YELLOW — attribution added
+  to the dashboard footer and README as a conservative precaution; see
+  `THIRD_PARTY_DATA_LICENSES.md` for what would be needed to upgrade
+  this to GREEN (a direct check of the HDX dataset page's license
+  field for this specific vintage/version).**
 
 ---
 
@@ -109,9 +129,15 @@ pipeline automatically).
   Burden of Disease Study 2023 (GBD 2023) Results. Seattle, United
   States: Institute for Health Metrics and Evaluation (IHME), 2024.
   Available from https://vizhub.healthdata.org/gbd-results/.
-- License: IHME free-of-charge non-commercial user agreement (data is
-  small, aggregate, and non-identifying — no special compliance
-  handling needed beyond standard citation).
+- License: IHME free-of-charge non-commercial user agreement. **This
+  agreement governs use of the GBD Results Tool and the data it
+  returns; this project has not obtained a separate legal opinion on
+  whether redistributing the downloaded aggregate CSV rows themselves
+  (rather than only citing/using them) is within the terms, beyond the
+  tool's own citation requirement, which is followed above. YELLOW —
+  the data is small, aggregate, and non-identifying (province-level
+  rates only, no microdata), which lowers risk, but "low risk" is not
+  the same as "confirmed permitted." See `THIRD_PARTY_DATA_LICENSES.md`.**
 - Used by: `scripts/models/06_validate_against_gbd.py`
 - **Key finding (current, post-censoring-fix):** using the properly
   time-matched 2017-2018 average and the corrected discrete-time

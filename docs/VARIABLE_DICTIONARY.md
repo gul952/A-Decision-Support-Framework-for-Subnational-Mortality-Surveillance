@@ -178,18 +178,33 @@ DHS-derived file below wherever DHS coverage exists.
 
 ---
 
-## `data/processed/mortality/district_u5mr_direct_dhs.csv` — **Real DHS-derived estimate**
+## `data/processed/mortality/district_u5mr_direct_dhs.csv` — **Real DHS-derived estimate (public-safe subset)**
 *Produced by `scripts/models/02b_estimate_u5mr_from_dhs.py`*
+
+**Two-tier output (see `docs/COMPLIANCE.md` "Small-cell policy"):** this
+script writes a full version with raw counts to the gitignored
+`data/processed/dhs_derived/district_u5mr_direct_dhs_full.csv` (used
+internally by `03_build_person_segment_records.py` and
+`07_model_validation.py`), and a public-safe subset — documented below
+— to this committed path. The raw `n_births_5yr`/`n_deaths_u5_5yr`/
+`n_clusters` columns are **not** in the committed file; some districts
+have as few as 1 sampled cluster or 0 recorded deaths, and publishing
+those exact counts next to a named district was judged a small-cell
+disclosure risk. This is a conservative repository policy choice, not
+a claim that DHS's terms mandate this specific suppression.
 
 | Variable | Description | Source | Transformation |
 |---|---|---|---|
-| `n_births_5yr` | Births in the 5-year pre-interview reference window, assigned to this district | PDHS 2017-18 BR file, `b3`/`v008` (CMC dates) | Standard DHS reference period filter |
-| `n_deaths_u5_5yr` | Under-5 deaths among those births | PDHS 2017-18 BR file, `b5` (alive/dead), `b7` (age at death, months) | Deaths where `b7 < 60` and `b5 == 0` |
-| `n_clusters` | Number of distinct DHS clusters sampled in this district | PDHS BR `v001` × GPS cluster-district lookup | Count of unique clusters |
 | `u5mr_direct` | Direct (design-based) U5MR estimate, per 1,000 live births | PDHS 2017-18 BR file | Synthetic cohort (actuarial) life table method: chained segment-specific survival probabilities across 8 standard age segments (0, 1-2, 3-5, 6-11, 12-23, 24-35, 36-47, 48-59 months), with **actuarial (person-time) exposure correction** for children too young at interview to have completed a segment (a real bug found and fixed during development — see `docs/LIMITATIONS.md` §7 for the historical binary-censoring version that produced unstable 1000/1000 estimates in thin segments). Weighted using DHS sample weights (`v005 / 1,000,000`). |
 | `u5mr_lower95` / `u5mr_upper95` | 95% CI on the direct estimate | PDHS 2017-18 BR file | Cluster-aware (not individual-level) bootstrap, 300 resamples, respecting DHS's clustered survey design |
-| `low_direct_coverage` | Boolean flag | Derived | True if `n_births_5yr < 100` — a rule-of-thumb threshold below which the direct estimate alone is considered unstable |
+| `low_direct_coverage` | Boolean flag | Derived | True if `n_births_5yr < 100` (see full file) — a rule-of-thumb threshold below which the direct estimate alone is considered unstable |
 | `estimate_type` | Always `"dhs_direct"` | — | — |
+
+The full (local-only) file additionally has `n_births_5yr`,
+`n_deaths_u5_5yr` (Under-5 deaths among those births; PDHS `b5`/`b7`),
+and `n_clusters` (distinct DHS clusters sampled, via `v001` × the GPS
+cluster-district lookup) — see the script's docstring for exact
+definitions.
 
 **Validation:** the population-weighted national aggregate of this
 method = 74.7 deaths/1,000 live births, vs. the published PDHS 2017-18

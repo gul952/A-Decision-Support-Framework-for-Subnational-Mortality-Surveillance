@@ -62,8 +62,12 @@ warnings.filterwarnings("ignore")
 TRACE_PATH = MODELS_DIR / "hierarchical_hazard_sae_trace.pkl"
 PERSON_SEGMENT_PATH = DATA_PROCESSED / "dhs_derived" / "person_segment_records.csv"
 FEATURES_PATH = DATA_PROCESSED / "features" / "district_features.csv"
-DHS_DIRECT_PATH = DATA_PROCESSED / "mortality" / "district_u5mr_direct_dhs.csv"
+# Full (local-only, gitignored) direct-estimate file with raw small-cell
+# counts (n_births_5yr etc.) needed for the weighted comparisons below --
+# NOT the public-safe data/processed/mortality/ copy. See docs/COMPLIANCE.md.
+DHS_DIRECT_PATH = DATA_PROCESSED / "dhs_derived" / "district_u5mr_direct_dhs_full.csv"
 HAZARD_RESULTS_PATH = DATA_PROCESSED / "models" / "hierarchical_hazard_sae_results.csv"
+DHS_DERIVED_DIR = DATA_PROCESSED / "dhs_derived"  # gitignored -- full small-cell counts stay local
 OUT_DIR = DATA_PROCESSED / "models"
 
 AGE_SEGMENTS = [(0, 1), (1, 3), (3, 6), (6, 12), (12, 24), (24, 36), (36, 48), (48, 60)]
@@ -420,16 +424,25 @@ def main():
 
     print("\n=== 3. CALIBRATION / COVERAGE CHECK ===")
     calib_result = calibration_coverage_check()
+    # Two-tier: full version (with raw n_births_5yr) stays local-only;
+    # public version drops it -- same small-cell policy as
+    # data/processed/mortality/district_u5mr_direct_dhs.csv (see
+    # docs/COMPLIANCE.md).
+    DHS_DERIVED_DIR.mkdir(parents=True, exist_ok=True)
+    calib_result.to_csv(DHS_DERIVED_DIR / "calibration_coverage_check_full.csv", index=False)
+    calib_public = calib_result.drop(columns=["n_births_5yr"])
     calib_path = OUT_DIR / "calibration_coverage_check.csv"
-    calib_result.to_csv(calib_path, index=False)
-    print(f"Wrote: {calib_path}")
+    calib_public.to_csv(calib_path, index=False)
+    print(f"Wrote (public-safe): {calib_path}")
 
     print("\n=== 4. MODEL COMPARISON TABLE ===")
     comparison_table = build_model_comparison_table()
+    comparison_table.to_csv(DHS_DERIVED_DIR / "model_comparison_table_full.csv", index=False)
+    comparison_public = comparison_table.drop(columns=["n_births_5yr"])
     comparison_path = OUT_DIR / "model_comparison_table.csv"
-    comparison_table.to_csv(comparison_path, index=False)
-    print(f"Wrote: {comparison_path}")
-    print(comparison_table.head(10).to_string(index=False))
+    comparison_public.to_csv(comparison_path, index=False)
+    print(f"Wrote (public-safe): {comparison_path}")
+    print(comparison_public.head(10).to_string(index=False))
 
     # -----------------------------------------------------------------
     # Write consolidated findings document

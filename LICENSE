@@ -24,9 +24,11 @@ SOFTWARE.
 
 NOTE: This license covers the CODE in this repository only.
 
-- PBS 2017 Census data (redistributed in data/raw/pbs2017-main/ when
-  fetched by scripts/run_pipeline.sh) is used under the MIT license of
-  its source repository, cerp-analytics/pbs2017.
+- Third-party data (PBS 2017 Census, OCHA administrative boundaries,
+  IHME GBD, OpenStreetMap/HOTOSM) is governed by each source's own
+  terms, not this license — see THIRD_PARTY_DATA_LICENSES.md for the
+  full per-source breakdown, including which licenses have and have
+  not been independently verified.
 - DHS Program survey data is NOT covered by this license and is NOT
   redistributed in this repository. Any use of DHS data by anyone
   reproducing this project is governed solely by the DHS Program's own
