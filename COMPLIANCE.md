@@ -26,11 +26,16 @@ actually requires, so every policy below is labeled.
 
 See `THIRD_PARTY_DATA_LICENSES.md` for the full per-source breakdown.
 Summary: OSM/HOTOSM data is redistributed only in aggregated form with
-attribution (ODbL requirement); OCHA boundary and PBS census licensing
-were **not** independently re-verified beyond the license of the code
-repository that bundled them, and are flagged YELLOW rather than
-claimed as MIT; IHME GBD data redistribution is assessed low-risk but
-not independently confirmed permitted beyond citation.
+attribution (ODbL requirement); the district boundary shapefile's
+source was corrected from a previous mis-attribution to "OCHA" — it's
+actually from ALHASAN Systems Private Limited, licensed Public Domain
+per HDX's metadata field but with an unresolved "sole property"
+caveat on the same page; PBS census licensing was not independently
+verified beyond the license of the code repository that bundled it;
+and **raw IHME GBD data files were found to be committed in violation
+of IHME's own user agreement (which prohibits third-party
+redistribution via a user-hosted download) and have been removed from
+git tracking** — see below.
 
 ## No-raw-data policy
 
@@ -72,9 +77,10 @@ extra caution is project policy, not a DHS requirement.
 
 ## Attribution policy
 
-OSM/HOTOSM (ODbL — attribution required), OCHA boundaries (terms not
-independently re-verified — attributed out of caution), IHME GBD
-(citation required by its own terms), and PBS census are all credited
+OSM/HOTOSM (ODbL — attribution required), the ALHASAN Systems district
+boundaries (Public Domain per HDX, but attributed anyway given the
+unresolved "sole property" caveat), IHME GBD (citation required by its
+own terms), and PBS census are all credited
 in the dashboard footer (`dashboard/index.html`, `dashboard/dashboard.jsx`)
 and in `docs/DATA_SOURCES.md` / `THIRD_PARTY_DATA_LICENSES.md`.
 
@@ -101,42 +107,56 @@ keys, tokens, passwords, private key headers) found:
   an OpenStreetMap health-facility record ("HEALTH SECRETS" clinic
   name) — not a credential.
 
-No history rewrite was necessary for credential or raw-microdata
-removal, because none was ever committed. The one substantive
-compliance gap found — small-cell DHS-derived counts in
-`data/processed/mortality/district_u5mr_direct_dhs.csv` — was present
-in the current file content and has been fixed going forward (see
-"Small-cell policy" above and `KNOWN_ISSUES` below for the historical
-disclosure this leaves in older commits).
+No history rewrite was necessary for credential or raw-DHS-microdata
+removal, because none was ever committed. Two substantive compliance
+gaps were found in current (not just historical) file content and have
+been fixed going forward: (1) small-cell DHS-derived counts in
+`data/processed/mortality/district_u5mr_direct_dhs.csv` and two
+model-diagnostic files, and (2) raw IHME GBD download files committed
+in tension with IHME's own redistribution restriction (see "Small-cell
+policy" above, `THIRD_PARTY_DATA_LICENSES.md` §3, and "Known
+uncertainties" below for the historical disclosure both of these leave
+in older commits).
 
 ## Known uncertainties / requiring confirmation from a data owner
 
-1. **OCHA boundary shapefile license** — bundled via an MIT-licensed
-   code repo, but the boundary data's own license was not
-   independently checked against the original HDX dataset page. See
-   `THIRD_PARTY_DATA_LICENSES.md` §5 for how to resolve this.
-2. **PBS census table redistribution terms** — no explicit PBS open-data
-   license statement was located; treated as low-risk aggregate public
-   statistics but not confirmed via an explicit license grant.
-3. **IHME GBD redistribution of downloaded rows** — assessed low-risk
-   (aggregate, non-identifying, citation followed) but not confirmed
-   via a separate legal reading of the free-of-charge agreement beyond
-   its citation requirement.
-4. **Historical git commits still contain the un-suppressed small-cell
-   counts** for `district_u5mr_direct_dhs.csv` (every commit from the
-   initial commit onward, since this file existed from the start of
-   the repository). Rewriting history to purge this is possible (as
+1. **District boundary shapefile source/license** — corrected during
+   this review: the source is ALHASAN Systems Private Limited (not
+   OCHA, as previously documented), licensed "Public Domain / No
+   Restrictions" per HDX's own metadata field, but the same dataset
+   page separately claims "sole property of ALHASAN SYSTEMS" — an
+   unresolved contradiction. Attribution added regardless. See
+   `THIRD_PARTY_DATA_LICENSES.md` §5.
+2. **PBS census table redistribution terms** — no explicit PBS
+   open-data license statement was located; PBS's own site describes
+   historically selling census data for a fee, which weighs toward
+   caution. Treated as low-risk aggregate public statistics but not
+   confirmed via an explicit license grant.
+3. **IHME GBD raw data — resolved during this review.** The actual
+   user agreement was checked and found to explicitly prohibit
+   third-party redistribution via user-hosted downloads. The raw files
+   were committed to this repository; they have now been removed from
+   git tracking (kept locally only). This was a real finding, not
+   merely a theoretical risk — see `THIRD_PARTY_DATA_LICENSES.md` §3
+   and `data/external/gbd/README.md`.
+4. **Historical git commits still contain:**
+   - the un-suppressed small-cell DHS counts for
+     `district_u5mr_direct_dhs.csv` and two model-diagnostic files
+     (every commit from the initial commit onward), and
+   - the raw IHME GBD CSV files that were just removed from current
+     tracking (also present since the initial commit).
+
+   Rewriting history to purge either of these is possible (as
    demonstrated earlier in this repository's history for commit
    messages) but was not performed as part of this pass, since it:
    (a) requires a force-push that invalidates any existing clones/forks,
    (b) is a bigger, higher-blast-radius operation than editing the
-   current file content, and (c) the disclosure risk of small DHS
-   sample-size counts is real but categorically less severe than, say,
-   leaked credentials. **Recommendation:** if this repository has any
-   forks, stars, or has been cloned by others, treat this as an
-   open item and decide explicitly whether to rewrite history (see
-   `docs/DATA_SOURCES.md` and `THIRD_PARTY_DATA_LICENSES.md` for
-   context) — this document deliberately does not perform that rewrite
+   current file content, and (c) both disclosure risks, while real, are
+   categorically less severe than leaked credentials (none of which
+   exist in this repository's history). **Recommendation:** if this
+   repository has any forks, stars, or has been cloned by others,
+   treat this as an open item and decide explicitly whether to rewrite
+   history — this document deliberately does not perform that rewrite
    silently.
 
 ## Status legend used in the final audit report

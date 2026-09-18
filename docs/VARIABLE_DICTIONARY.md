@@ -16,7 +16,7 @@ and `docs/LIMITATIONS.md` for caveats on specific variables.
 | `province` | Province/region name | PBS census shapefile `PROVINCE` field | Title-cased |
 | `area_sqkm` | District land area, km² | PBS 2017 Census, Table 01 | Direct |
 | `census_population_2017` | Total population, 2017 census | PBS 2017 Census, Table 01 | Direct |
-| `geometry` | District boundary polygon | PBS census shapefile (OCHA-sourced boundaries) | Dissolved to one polygon per canonical district, invalid geometries repaired via `buffer(0)` |
+| `geometry` | District boundary polygon | PBS census shapefile bundle (boundaries from ALHASAN Systems Private Limited via HDX -- see `docs/DATA_SOURCES.md`; previously mislabeled "OCHA-sourced" here) | Dissolved to one polygon per canonical district, invalid geometries repaired via `buffer(0)` |
 
 ---
 

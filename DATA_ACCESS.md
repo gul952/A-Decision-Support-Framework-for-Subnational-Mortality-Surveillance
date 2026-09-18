@@ -54,7 +54,8 @@ sent to references@dhsprogram.com.
 
 Bundled in the same `pbs2017-main` fetch above
 (`data/raw/pbs2017-main/data/00_shapefiles/District_Boundary.shp`).
-Original source: OCHA Pakistan admin boundaries via HDX — see
+Original source: ALHASAN Systems Private Limited, via HDX (hosted on
+OCHA's HDX platform, but not an official OCHA product) — see
 `THIRD_PARTY_DATA_LICENSES.md` for the licensing caveat on this
 specific bundle.
 
@@ -64,7 +65,7 @@ specific bundle.
 |---|---|
 | Source | https://vizhub.healthdata.org/gbd-results/ (requires a free IHME account) |
 | Access route | Manual download via the GBD Results Tool — not fetchable automatically by this pipeline |
-| Committed to GitHub? | **Yes** — `data/external/gbd/*.csv` (aggregate, province-level, non-identifying) |
+| Committed to GitHub? | **No** — removed after confirming the IHME user agreement prohibits third-party redistribution via a user-hosted download (see `data/external/gbd/README.md`). Citation files and this project's own derived comparison table remain committed. |
 | Required for | External validation/benchmarking of the hierarchical model (not required to run the core pipeline) |
 
 ## Health facility locations (OpenStreetMap via HOTOSM)
@@ -82,6 +83,6 @@ specific bundle.
 |---|---|---|
 | DHS/PDHS microdata (BR/HR/IR/KR/GE) | No | **Yes — required for real mortality estimates** |
 | PBS census tables + boundary shapefile | Auto-fetched by pipeline | No |
-| IHME GBD 2023 comparison data | Yes | No |
+| IHME GBD 2023 comparison data | No (citation + derived comparison table only) | **Yes — required only to regenerate the GBD validation step** |
 | OSM/HOTOSM facility locations | Yes | No |
 | Pipeline code | Yes | No |

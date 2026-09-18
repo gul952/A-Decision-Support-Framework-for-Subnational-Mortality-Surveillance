@@ -174,8 +174,8 @@ Code in this repository: MIT (see `LICENSE`).
 
 Data: third-party data is **not** covered by the MIT license and is
 handled on a per-source basis — see `THIRD_PARTY_DATA_LICENSES.md` for
-the full breakdown (DHS, IHME GBD, OSM/HOTOSM, OCHA boundaries, PBS
-census). DHS data specifically is **not** redistributed — see the DHS
+the full breakdown (DHS, IHME GBD, OSM/HOTOSM, district boundaries,
+PBS census). DHS data specifically is **not** redistributed — see the DHS
 terms of use at https://dhsprogram.com/Data/terms-of-use.cfm, which
 govern any use of that dataset by anyone reproducing this project.
 `COMPLIANCE.md` distinguishes what each source's terms actually

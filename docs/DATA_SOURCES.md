@@ -59,8 +59,9 @@ it was actually obtained and used, not just planned.
 - **cerp-analytics/pbs2017 repository license: MIT.** This covers the
   *digitization/formatting code and files as packaged in that repo*.
   It is a separate, unresolved question whether the underlying PBS
-  census tables and OCHA-sourced boundary shapefile (bundled in the
-  same repo, see §3 below) are themselves freely redistributable under
+  census tables and the bundled boundary shapefile (see §3 below,
+  actually sourced from ALHASAN Systems Private Limited via HDX, not
+  OCHA) are themselves freely redistributable under
   Pakistani or international norms for official statistics — an
   upstream repo's MIT license does not by itself establish that the
   government data it contains is redistributable. **YELLOW: treated
@@ -73,20 +74,22 @@ it was actually obtained and used, not just planned.
 **Status:** `[FETCHED]` — 2026-08-04
 
 - Bundled in the same repo above (`data/raw/pbs2017-main/data/00_shapefiles/District_Boundary.shp`)
-- Original source: OCHA Pakistan admin boundaries, via https://data.humdata.org/dataset/pakistan-union-council-boundaries-along-with-other-admin-boundaries-dataset
+- Original source: district boundary shapefile bundled in the same
+  repo. **Corrected during a compliance review**: the previous version
+  of this document called this "OCHA Pakistan admin boundaries," but
+  the actual linked HDX dataset page
+  (https://data.humdata.org/dataset/pakistan-union-council-boundaries-along-with-other-admin-boundaries-dataset)
+  shows the source is **ALHASAN Systems Private Limited**, a private
+  company — not an official OCHA product, despite being hosted on
+  OCHA's HDX platform.
 - 161 polygons, WGS84 (EPSG:4326)
 - Note: boundaries dated ~2010-vintage per repo README; some divergence from 2017 census district list expected (e.g. district splits) — reconciled in `scripts/cleaning/01_clean_geography.py`
-- **Licensing has not been independently re-verified against the
-  original OCHA/HDX dataset page.** HDX-hosted OCHA administrative
-  boundary datasets are commonly released under CC BY-IGO or similar
-  terms requiring attribution, but this project has not confirmed the
-  exact license actually attached to *this* dataset version, and does
-  **not** claim it is MIT-licensed merely because it arrived bundled
-  inside an MIT-licensed code repository. **YELLOW — attribution added
-  to the dashboard footer and README as a conservative precaution; see
-  `THIRD_PARTY_DATA_LICENSES.md` for what would be needed to upgrade
-  this to GREEN (a direct check of the HDX dataset page's license
-  field for this specific vintage/version).**
+- **License, per HDX's own metadata field:** "Public Domain / No
+  Restrictions." **However**, the same dataset page's caveats text
+  states "This product is the sole property of ALHASAN SYSTEMS" — a
+  contradiction HDX itself does not resolve. This project attributes
+  ALHASAN Systems in the dashboard footer as a precaution despite the
+  public-domain license field. See `THIRD_PARTY_DATA_LICENSES.md` §5.
 
 ---
 
@@ -129,15 +132,18 @@ pipeline automatically).
   Burden of Disease Study 2023 (GBD 2023) Results. Seattle, United
   States: Institute for Health Metrics and Evaluation (IHME), 2024.
   Available from https://vizhub.healthdata.org/gbd-results/.
-- License: IHME free-of-charge non-commercial user agreement. **This
-  agreement governs use of the GBD Results Tool and the data it
-  returns; this project has not obtained a separate legal opinion on
-  whether redistributing the downloaded aggregate CSV rows themselves
-  (rather than only citing/using them) is within the terms, beyond the
-  tool's own citation requirement, which is followed above. YELLOW —
-  the data is small, aggregate, and non-identifying (province-level
-  rates only, no microdata), which lowers risk, but "low risk" is not
-  the same as "confirmed permitted." See `THIRD_PARTY_DATA_LICENSES.md`.**
+- License: IHME Free-of-Charge Non-Commercial User Agreement. **A
+  specific restrictive clause was confirmed during a compliance review:
+  "User may not without written permission from UW provide to third
+  parties the ability to download IHME Data Sets from User-provided
+  hosting facilities." The raw downloaded CSVs were committed to this
+  public repository, which is exactly that — so they have been
+  removed from git tracking (kept locally only; `.gitignore`d). See
+  `data/external/gbd/README.md` and `THIRD_PARTY_DATA_LICENSES.md` §3
+  for the full record. The derived comparison table
+  (`data/processed/models/gbd_validation_comparison.csv`) is
+  unaffected — it's a small "Result" of the kind the same agreement
+  explicitly permits, not a redistribution of the raw Data Set.**
 - Used by: `scripts/models/06_validate_against_gbd.py`
 - **Key finding (current, post-censoring-fix):** using the properly
   time-matched 2017-2018 average and the corrected discrete-time

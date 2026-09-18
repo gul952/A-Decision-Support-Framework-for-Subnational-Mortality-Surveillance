@@ -24,11 +24,12 @@ SOFTWARE.
 
 NOTE: This license covers the CODE in this repository only.
 
-- Third-party data (PBS 2017 Census, OCHA administrative boundaries,
-  IHME GBD, OpenStreetMap/HOTOSM) is governed by each source's own
-  terms, not this license — see THIRD_PARTY_DATA_LICENSES.md for the
-  full per-source breakdown, including which licenses have and have
-  not been independently verified.
+- Third-party data (PBS 2017 Census, district boundaries from ALHASAN
+  Systems Private Limited via HDX, IHME GBD, OpenStreetMap/HOTOSM) is
+  governed by each source's own terms, not this license — see
+  THIRD_PARTY_DATA_LICENSES.md for the full per-source breakdown,
+  including which licenses have and have not been independently
+  verified.
 - DHS Program survey data is NOT covered by this license and is NOT
   redistributed in this repository. Any use of DHS data by anyone
   reproducing this project is governed solely by the DHS Program's own

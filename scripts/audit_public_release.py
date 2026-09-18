@@ -12,6 +12,9 @@ publish) for:
     sidecars (.shp/.shx/.dbf/.prj)
   - likely DHS raw filenames (PKBR71, PKHR71, PKIR71, PKKR71, PKGE71
     and similar DHS recode-file naming patterns)
+  - raw IHME GBD download files (IHME's user agreement prohibits
+    third-party redistribution via a user-hosted download; this
+    project's own small derived comparison table is unaffected)
   - credential-like filenames (.env, credentials.json, *.pem, *.key,
     etc.)
   - suspiciously large binary files (over a size threshold) that
@@ -54,6 +57,14 @@ FORBIDDEN_FILENAME_SUBSTRINGS = [
 DHS_FILENAME_PATTERNS = [
     "pkbr71", "pkhr71", "pkir71", "pkkr71", "pkge71", "pkgc72",
 ]
+
+# Raw IHME GBD downloaded data files -- the IHME Free-of-Charge
+# Non-Commercial User Agreement prohibits providing third parties the
+# ability to download IHME Data Sets from user-hosted facilities. This
+# project's own small derived comparison table
+# (gbd_validation_comparison.csv) is fine and does not match this
+# pattern; only IHME's own raw export filenames do.
+GBD_RAW_FILENAME_PREFIX = "ihme-gbd_"
 
 # Columns that reveal exact DHS small-cell counts; only permitted inside
 # the designated local-only directory.
@@ -105,6 +116,18 @@ def check_dhs_filenames(files):
     return problems
 
 
+def check_gbd_raw_files(files):
+    problems = []
+    for f in files:
+        if f.name.lower().startswith(GBD_RAW_FILENAME_PREFIX):
+            problems.append(
+                f"Raw IHME GBD download tracked (redistribution not permitted "
+                f"without written permission -- see data/external/gbd/README.md): "
+                f"{f.relative_to(REPO_ROOT)}"
+            )
+    return problems
+
+
 def check_small_cell_columns(files):
     problems = []
     for f in files:
@@ -150,6 +173,7 @@ def main():
     red_problems += check_forbidden_extensions(files)
     red_problems += check_forbidden_filenames(files)
     red_problems += check_dhs_filenames(files)
+    red_problems += check_gbd_raw_files(files)
     red_problems += check_small_cell_columns(files)
 
     warnings = check_large_files(files)

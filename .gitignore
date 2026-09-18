@@ -28,6 +28,16 @@ data/raw/dhs/**/*.rar
 data/processed/dhs_derived/*
 !data/processed/dhs_derived/README.md
 
+# --- IHME GBD raw downloaded data files: not redistributed.
+# The IHME Free-of-Charge Non-Commercial User Agreement prohibits
+# "provid[ing] to third parties the ability to download IHME Data Sets
+# from User-provided hosting facilities" without written permission --
+# hosting these raw downloaded files on a public git remote is exactly
+# that. Citation files (no IHME data values) and this project's own
+# derived comparison results (data/processed/models/gbd_validation_comparison.csv)
+# are unaffected and remain committed -- see THIRD_PARTY_DATA_LICENSES.md. ---
+data/external/gbd/IHME-GBD_2023_DATA-*.csv
+
 # --- Large model trace: regeneratable via scripts/models/04_hierarchical_hazard_sae.py,
 # not needed in version control. ---
 models/hierarchical_hazard_sae_trace.pkl
