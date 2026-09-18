@@ -107,16 +107,18 @@ keys, tokens, passwords, private key headers) found:
   an OpenStreetMap health-facility record ("HEALTH SECRETS" clinic
   name) — not a credential.
 
-No history rewrite was necessary for credential or raw-DHS-microdata
-removal, because none was ever committed. Two substantive compliance
-gaps were found in current (not just historical) file content and have
-been fixed going forward: (1) small-cell DHS-derived counts in
+No history rewrite was necessary for credential removal, because none
+were ever committed. Two substantive compliance gaps were found in
+file content (not just historical) and have since been fixed both
+going forward and retroactively: (1) small-cell DHS-derived counts in
 `data/processed/mortality/district_u5mr_direct_dhs.csv` and two
 model-diagnostic files, and (2) raw IHME GBD download files committed
-in tension with IHME's own redistribution restriction (see "Small-cell
-policy" above, `THIRD_PARTY_DATA_LICENSES.md` §3, and "Known
-uncertainties" below for the historical disclosure both of these leave
-in older commits).
+in tension with IHME's own redistribution restriction. **Both were
+subsequently scrubbed from the entire git history** (not just current
+file content) via `git filter-branch --tree-filter`, with dates and
+commit messages verified unchanged before the rewritten history was
+force-pushed — see item 4 under "Known uncertainties" below for the
+full record of that operation.
 
 ## Known uncertainties / requiring confirmation from a data owner
 
@@ -139,25 +141,26 @@ in older commits).
    git tracking (kept locally only). This was a real finding, not
    merely a theoretical risk — see `THIRD_PARTY_DATA_LICENSES.md` §3
    and `data/external/gbd/README.md`.
-4. **Historical git commits still contain:**
-   - the un-suppressed small-cell DHS counts for
-     `district_u5mr_direct_dhs.csv` and two model-diagnostic files
-     (every commit from the initial commit onward), and
-   - the raw IHME GBD CSV files that were just removed from current
-     tracking (also present since the initial commit).
-
-   Rewriting history to purge either of these is possible (as
-   demonstrated earlier in this repository's history for commit
-   messages) but was not performed as part of this pass, since it:
-   (a) requires a force-push that invalidates any existing clones/forks,
-   (b) is a bigger, higher-blast-radius operation than editing the
-   current file content, and (c) both disclosure risks, while real, are
-   categorically less severe than leaked credentials (none of which
-   exist in this repository's history). **Recommendation:** if this
-   repository has any forks, stars, or has been cloned by others,
-   treat this as an open item and decide explicitly whether to rewrite
-   history — this document deliberately does not perform that rewrite
-   silently.
+4. **Historical git commits — resolved.** The un-suppressed small-cell
+   DHS counts (`district_u5mr_direct_dhs.csv`,
+   `calibration_coverage_check.csv`, `model_comparison_table.csv`,
+   an embedded table in `docs/MODEL_VALIDATION.md`) and the raw IHME
+   GBD CSV files were present in every commit from the initial commit
+   onward. Since both were confined to specific files that never
+   changed content between commits (making a full-history rewrite
+   low-risk and precise), history was rewritten with
+   `git filter-branch --tree-filter` to replace those files' content
+   with the safe/redacted versions (or remove them, for the GBD raw
+   files) in every commit, then force-pushed with
+   `--force-with-lease`. **Author and committer dates and commit
+   messages were verified unchanged** (compared programmatically
+   against a pre-rewrite backup before pushing) — only the content of
+   the specific affected files changed. Verified afterward via the
+   GitHub API that the repository's very first commit no longer
+   contains the raw GBD files or the small-cell columns. This
+   repository has no other clones or forks known to exist, so no
+   further coordination was needed; if that changes, anyone who
+   cloned before this rewrite should re-clone rather than pull.
 
 ## Status legend used in the final audit report
 
