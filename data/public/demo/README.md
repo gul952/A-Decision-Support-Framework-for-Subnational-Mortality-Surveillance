@@ -37,4 +37,4 @@ claim.
 **Nothing in the committed, public copy of this data is synthetic or
 fabricated** — the "demo" values are a real, clearly-labeled,
 non-DHS proxy estimate, not invented numbers standing in for DHS
-results. See `docs/COMPLIANCE.md` for the full policy discussion.
+results. See `COMPLIANCE.md` for the full policy discussion.

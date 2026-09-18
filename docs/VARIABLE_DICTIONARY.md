@@ -181,7 +181,7 @@ DHS-derived file below wherever DHS coverage exists.
 ## `data/processed/mortality/district_u5mr_direct_dhs.csv` — **Real DHS-derived estimate (public-safe subset)**
 *Produced by `scripts/models/02b_estimate_u5mr_from_dhs.py`*
 
-**Two-tier output (see `docs/COMPLIANCE.md` "Small-cell policy"):** this
+**Two-tier output (see `COMPLIANCE.md` "Small-cell policy"):** this
 script writes a full version with raw counts to the gitignored
 `data/processed/dhs_derived/district_u5mr_direct_dhs_full.csv` (used
 internally by `03_build_person_segment_records.py` and

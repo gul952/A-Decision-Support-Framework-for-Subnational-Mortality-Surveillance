@@ -17,7 +17,7 @@ of sync:
 
 Each of these is covered in `docs/DATA_SOURCES.md` (what it is and
 where it came from) and `THIRD_PARTY_DATA_LICENSES.md` (what license
-or terms apply to redistributing it). `docs/COMPLIANCE.md` explains
+or terms apply to redistributing it). `COMPLIANCE.md` explains
 the project's small-cell suppression policy for the DHS-derived files
 specifically.
 

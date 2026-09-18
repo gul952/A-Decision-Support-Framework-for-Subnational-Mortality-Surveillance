@@ -27,7 +27,7 @@ Every script that reads from this directory is annotated with a
 `*** DHS COMPLIANCE BOUNDARY ***` docstring explaining exactly what
 leaves the script (always: district-aggregated, non-identifying
 statistics only) and what never does (individual/household/cluster-level
-records, exact GPS coordinates). See `docs/COMPLIANCE.md` for the
+records, exact GPS coordinates). See `COMPLIANCE.md` for the
 project's overall data-handling policy, and
 https://dhsprogram.com/Data/terms-of-use.cfm for DHS's own terms, which
 govern your use of anything you place here.

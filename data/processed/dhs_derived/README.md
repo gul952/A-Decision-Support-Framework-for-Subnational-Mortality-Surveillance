@@ -22,7 +22,7 @@ and the public-safe `mortality/`).
   `n_clusters` counts per district. Some districts have as few as 1
   sampled cluster or 0 recorded deaths in the reference window;
   publishing those exact counts next to a named district is a
-  small-cell disclosure risk (see `docs/COMPLIANCE.md`). The
+  small-cell disclosure risk (see `COMPLIANCE.md`). The
   **public-safe** counterpart — rate, CI, and coverage flag only, no
   raw counts — lives at `data/processed/mortality/district_u5mr_direct_dhs.csv`
   and *is* committed.
@@ -38,4 +38,4 @@ Most of its subdirectories hold final, district-level, non-identifying
 aggregates and are public. This one subdirectory holds intermediate,
 more granular artifacts on the way to those aggregates, and is
 deliberately kept local — see the `.gitignore` comment for the original
-rationale and `docs/COMPLIANCE.md` for the full policy.
+rationale and `COMPLIANCE.md` for the full policy.

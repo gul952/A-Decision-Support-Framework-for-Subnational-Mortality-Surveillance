@@ -98,7 +98,7 @@ writes both a full local-only file
 (`data/processed/dhs_derived/district_u5mr_direct_dhs_full.csv`, never
 committed) and a public-safe subset
 (`data/processed/mortality/district_u5mr_direct_dhs.csv`, small-cell
-counts removed — see `docs/COMPLIANCE.md`). No manual step is needed,
+counts removed — see `COMPLIANCE.md`). No manual step is needed,
 but if you're adding a new DHS-derived output of your own, follow the
 same two-tier pattern.
 

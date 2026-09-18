@@ -34,7 +34,7 @@ handling recommended, or terms not independently re-verified) · 🔴 RED
   applies its own conservative policy (district-level, non-identifying
   aggregates only; raw small-cell counts such as exact death/cluster
   counts are additionally suppressed even at the district level — see
-  `docs/COMPLIANCE.md`).
+  `COMPLIANCE.md`).
 - **Purpose restriction:** Use of DHS data is tied to the specific
   registered DHS research project that obtained it. This repository's
   code does not grant, and cannot grant, permission to use DHS data —
